@@ -6,6 +6,8 @@ export type Secrets = {
   //these will be used for auth requests, in 'single' and 'multiple' modes through the proxy
   userName: string
   token: string
+  clientId: string
+  proxy: string
 }
 
 const pluginConfigKeys = [
@@ -28,6 +30,11 @@ const pluginConfigKeys = [
     key: 'clientId',
     title: 'Client ID',
     description: "This user's Client ID, usually given to you by Aprimo.",
+  },
+  {
+    key: 'proxy',
+    title: 'Proxy',
+    description: 'The proxy used to reach Aprimo (necessary for non-CDN assets)',
   },
 ];
 

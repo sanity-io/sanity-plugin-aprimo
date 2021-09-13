@@ -7,6 +7,10 @@
     {
       "implements": "part:@sanity/base/schema-type",
       "path": "schema/AprimoAsset"
+    },
+    {
+      "implements": "part:@sanity/base/schema-type",
+      "path": "schema/AprimoCDNAsset"
     }
   ]
 }

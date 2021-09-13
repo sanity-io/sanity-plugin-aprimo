@@ -9,6 +9,7 @@ import Fieldset from 'part:@sanity/components/fieldsets/default'
 import SetupIcon from 'part:@sanity/base/plugin-icon'
 import { Marker } from '@sanity/types'
 import styled from 'styled-components'
+import AprimoCDNPreview from './AprimoCDNPreview'
 import AprimoPreview from './AprimoPreview'
 import { useSecrets } from 'sanity-secrets'
 import SecretsConfigView, { Secrets, namespace } from './SecretsConfigView'
@@ -49,13 +50,17 @@ const WidgetInput = (props: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const { secrets } = useSecrets<Secrets>(namespace);
 
+  //this is how we'll keep track of which message to listen to
+  const [isFetching, setIsFetching] = useState(false)
+
     const openSelector = (tenantName: string) => {
+      setIsFetching(true)
       const selectorOptions = {
         title: 'Select asset',
         description: "Select the asset you'd like to bring into this Sanity document",
         accept: 'Use this asset',
-        //dupe "non-CDN" widget should use "multiple", most likely
-        select: 'singlerendition'
+        //TODO: multiple
+        select: (type.name === 'aprimo.cdnasset') ? 'singlerendition' : 'single'
       }
       const encodedOptions = btoa(JSON.stringify(selectorOptions))
       window.open(`https://${tenantName}.dam.aprimo.com/dam/selectcontent#options=${encodedOptions}`, 'selector')
@@ -63,13 +68,23 @@ const WidgetInput = (props: Props) => {
 
   useEffect(() => {
     const handleMessageEvent = async (event: MessageEvent) => {
-      // Ensure only messages from the Aprimo Content Selector are handled.
-      if (secrets &&
-          event.origin === `https://${secrets.tenantName}.dam.aprimo.com` &&
+      if (!isFetching) {
+        return
+      }
+
+      // Ensure only messages from the Aprimo Content Selector are handled
+      if (secrets && event.origin === `https://${secrets.tenantName}.dam.aprimo.com`) {
+        //if cancel, get out of fetching state
+        if (event.data.result === 'cancel') {
+          setIsFetching(false)
+          return
+        } else if (
           event.data.selection && 
-          event.data.selection[0]) {
-        const newImage = event.data.selection[0]
-        onChange(PatchEvent.from(newImage ? set(newImage) : unset()))
+          event.data.selection[0])  {
+            setIsFetching(false)
+            const newImage = event.data.selection[0]
+            onChange(PatchEvent.from(newImage ? set(newImage) : unset()))
+          }
       }
     }
 
@@ -77,7 +92,7 @@ const WidgetInput = (props: Props) => {
     //cleanup
     return () => window.removeEventListener("message", handleMessageEvent)
 
-  }, [onChange, secrets])
+  }, [isFetching, onChange, secrets])
 
   const action = secrets 
     ? () => openSelector(secrets.tenantName)
@@ -107,7 +122,9 @@ const WidgetInput = (props: Props) => {
         level={level}
       >
         <div style={{ textAlign: 'center' }}>
-          <AprimoPreview value={value} />
+          {
+            (type.name == 'aprimo.cdnasset') ?  <AprimoCDNPreview value={value} /> : <AprimoPreview value={value} /> 
+          }
         </div>
 
         <ButtonGrid align="start">
@@ -136,19 +153,3 @@ const WidgetInput = (props: Props) => {
 }
 
 export default WidgetInput;
-
-// TODO: make dupe widget that uses this to get preview of resource for "non-CDN" version
-// const getAuthToken = async (secrets) => {
-//   const base64secret = btoa(`${secrets.userName}:${secrets.token}`)
-//   const headers = {
-//     'Client-id': secrets.clientId,
-//     'Content-type': 'application/json',
-//     'Authorization': `Basic ${base64secret}`
-//   }
-//   return fetch('https://partner1.aprimo.com/api/oauth/create-native-token', {
-//     method: 'POST',
-//     headers
-//   })
-//   .then(res => res.json())
-//   .then(res => res.accessToken)
-// }

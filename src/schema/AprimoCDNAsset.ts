@@ -1,11 +1,12 @@
 import AprimoWidget from '../components/AprimoWidget'
-import AprimoPreview from '../components/AprimoPreview'
+// import AprimoCDNPreview from '../components/AprimoCDNPreview'
 import AprimoDiff from '../components/AprimoDiff'
+import AprimoCDNPreview from '../components/AprimoCDNPreview'
 
 export default {
   type: 'object',
-  name: 'aprimo.asset',
-  title: 'Aprimo Asset',
+  name: 'aprimo.cdnasset',
+  title: 'Aprimo CDN Asset',
   fields: [
     {
       type: 'string',
@@ -14,10 +15,20 @@ export default {
     {
       type: 'string',
       name: 'title',
-    }
+    },
+    {
+      type: 'object',
+      name: 'rendition',
+      fields: [
+        {
+          type: 'string',
+          name: 'publicuri',
+        },
+      ]
+    },
   ],
   inputComponent: AprimoWidget,
-  component: AprimoPreview,
+  component: AprimoCDNPreview,
   diffComponent: AprimoDiff,
   //TODO: preview will likely become necessary with multiple preview type
 

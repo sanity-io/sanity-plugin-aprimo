@@ -1,25 +1,30 @@
 import React from 'react';
-import { DiffFromTo } from '@sanity/field/diff';
+import { DiffFromTo, SchemaType } from '@sanity/field/diff';
+import AprimoCDNPreview from './AprimoCDNPreview';
+import AprimoPreview from './AprimoPreview';
 
-const AprimoDiffPreview = ({value}
-  : {value: AprimoAsset}) => {
-  const url = value && value.rendition && value.rendition.publicuri
-  if (!value || !url) {
-    return null
+
+const findPreviewComponent = (schemaName: string) => {
+  switch(schemaName) {
+    case 'aprimo.cdnasset':
+      return AprimoCDNPreview
+    case 'aprimo.asset':
+      return AprimoPreview
+    default:
+      return () => <div />
+
   }
 
-  return (
-    <img alt='preview' src={url} style={{ maxWidth: '100%', height: 'auto' }} />
-  )
 }
 
 const AprimoDiff = ({diff, schemaType}
-: {diff: any, schemaType: any}) => {
+: {diff: any, schemaType: SchemaType}) => {
+  const previewComponent = findPreviewComponent(schemaType.name)
   return (
     <DiffFromTo
       diff={diff}
       schemaType={schemaType}
-      previewComponent={AprimoDiffPreview}
+      previewComponent={previewComponent}
     />
   )
 }
