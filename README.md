@@ -4,7 +4,7 @@
 
 ## Usage
 
-Declare a field to be `aprimo.asset` in your schema
+Declare a field to be `aprimo.asset` or an `aprimo.cdnasset` in your schema
 
 ```javascript
     {

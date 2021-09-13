@@ -7,6 +7,7 @@ import ImagePreview from './ImagePreview'
 type ComponentProps = {
   layout?: 'default' | 'block';
   value: Record<string, any>;
+  title?: string | null;
 };
 
 const getPreviewUrl = async (

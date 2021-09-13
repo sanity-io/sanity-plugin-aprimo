@@ -13,6 +13,7 @@ import AprimoCDNPreview from './AprimoCDNPreview'
 import AprimoPreview from './AprimoPreview'
 import { useSecrets } from 'sanity-secrets'
 import SecretsConfigView, { Secrets, namespace } from './SecretsConfigView'
+import { nanoid } from 'nanoid';
 
 const SetupButtonContainer = styled.div`
   position: relative;
@@ -83,6 +84,7 @@ const WidgetInput = (props: Props) => {
           event.data.selection[0])  {
             setIsFetching(false)
             const newImage = event.data.selection[0]
+            newImage._key = (value && value._key) ? value._key : nanoid()  
             onChange(PatchEvent.from(newImage ? set(newImage) : unset()))
           }
       }
@@ -92,7 +94,7 @@ const WidgetInput = (props: Props) => {
     //cleanup
     return () => window.removeEventListener("message", handleMessageEvent)
 
-  }, [isFetching, onChange, secrets])
+  }, [isFetching, onChange, secrets, value])
 
   const action = secrets 
     ? () => openSelector(secrets.tenantName)

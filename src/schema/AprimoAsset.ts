@@ -19,14 +19,13 @@ export default {
   inputComponent: AprimoWidget,
   component: AprimoPreview,
   diffComponent: AprimoDiff,
-  //TODO: preview will likely become necessary with multiple preview type
-
-  // preview: {
-  //   select: {
-  //     url: 'rendition.publicuri',
-  //   },
-  //   prepare({url}: any) {
-  //   },
-  //   component: AprimoPreview,
-  // },
+  preview: {
+    select: {
+      id: 'id',
+    },
+    prepare({id}: any) {
+      return { id }
+    },
+    component: AprimoPreview,
+  }
 }

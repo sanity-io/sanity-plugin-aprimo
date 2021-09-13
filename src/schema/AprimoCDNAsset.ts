@@ -1,5 +1,4 @@
 import AprimoWidget from '../components/AprimoWidget'
-// import AprimoCDNPreview from '../components/AprimoCDNPreview'
 import AprimoDiff from '../components/AprimoDiff'
 import AprimoCDNPreview from '../components/AprimoCDNPreview'
 
@@ -28,16 +27,16 @@ export default {
     },
   ],
   inputComponent: AprimoWidget,
-  component: AprimoCDNPreview,
   diffComponent: AprimoDiff,
-  //TODO: preview will likely become necessary with multiple preview type
-
-  // preview: {
-  //   select: {
-  //     url: 'rendition.publicuri',
-  //   },
-  //   prepare({url}: any) {
-  //   },
-  //   component: AprimoPreview,
-  // },
+  preview: {
+    select: {
+      url: 'rendition.publicuri',
+    },
+    prepare({url}: any) {
+      return { 
+        rendition: {publicuri: url},
+      }
+    },
+    component: AprimoCDNPreview
+  },
 }
