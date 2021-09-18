@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PatchEvent, {
   set,
   unset,
@@ -14,6 +14,7 @@ import AprimoPreview from './AprimoPreview'
 import { useSecrets } from 'sanity-secrets'
 import SecretsConfigView, { Secrets, namespace } from './SecretsConfigView'
 import { nanoid } from 'nanoid';
+import openSelector from '../utils/openSelector'; 
 
 const SetupButtonContainer = styled.div`
   position: relative;
@@ -49,43 +50,31 @@ const WidgetInput = (props: Props) => {
   }
 
   const [showSettings, setShowSettings] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const { secrets } = useSecrets<Secrets>(namespace);
 
   //this is how we'll keep track of which message to listen to
-  const [isFetching, setIsFetching] = useState(false)
-
-    const openSelector = (tenantName: string) => {
-      setIsFetching(true)
-      const selectorOptions = {
-        title: 'Select asset',
-        description: "Select the asset you'd like to bring into this Sanity document",
-        accept: 'Use this asset',
-        //TODO: multiple
-        select: (type.name === 'aprimo.cdnasset') ? 'singlerendition' : 'single'
-      }
-      const encodedOptions = btoa(JSON.stringify(selectorOptions))
-      window.open(`https://${tenantName}.dam.aprimo.com/dam/selectcontent#options=${encodedOptions}`, 'selector')
+  const inputRef = useRef(null)
+  const setAsset = (asset: Record<string, any>) => {
+      asset._key = (value && value._key) ? value._key : nanoid()  
+      onChange(PatchEvent.from(asset ? set(asset) : unset()))
   }
 
   useEffect(() => {
     const handleMessageEvent = async (event: MessageEvent) => {
-      if (!isFetching) {
-        return
-      }
 
       // Ensure only messages from the Aprimo Content Selector are handled
       if (secrets && event.origin === `https://${secrets.tenantName}.dam.aprimo.com`) {
         //if cancel, get out of fetching state
         if (event.data.result === 'cancel') {
-          setIsFetching(false)
+          setIsLoading(false)
           return
         } else if (
           event.data.selection && 
-          event.data.selection[0])  {
-            setIsFetching(false)
-            const newImage = event.data.selection[0]
-            newImage._key = (value && value._key) ? value._key : nanoid()  
-            onChange(PatchEvent.from(newImage ? set(newImage) : unset()))
+          event.data.selection[0] &&
+          isLoading)  {
+            setAsset(event.data.selection[0])
+            setIsLoading(false)
           }
       }
     }
@@ -94,10 +83,10 @@ const WidgetInput = (props: Props) => {
     //cleanup
     return () => window.removeEventListener("message", handleMessageEvent)
 
-  }, [isFetching, onChange, secrets, value])
+  }, [secrets, isLoading])
 
-  const action = secrets 
-    ? () => openSelector(secrets.tenantName)
+  const action = (selectType: string) => secrets 
+    ? () => {setIsLoading(true); openSelector(secrets.tenantName, selectType)}
     : () => setShowSettings(true)
 
 
@@ -113,6 +102,7 @@ const WidgetInput = (props: Props) => {
           kind="simple"
           title="Configure"
           tabIndex={1}
+          ref={inputRef}
           onClick={() => setShowSettings(true)}
         />
       </SetupButtonContainer>
@@ -125,7 +115,7 @@ const WidgetInput = (props: Props) => {
       >
         <div style={{ textAlign: 'center' }}>
           {
-            (type.name == 'aprimo.cdnasset') ?  <AprimoCDNPreview value={value} /> : <AprimoPreview value={value} /> 
+            (value && value.rendition && value.rendition.publicuri) ?  <AprimoCDNPreview value={value} /> : <AprimoPreview value={value} /> 
           }
         </div>
 
@@ -135,9 +125,18 @@ const WidgetInput = (props: Props) => {
               inverted
               title="Select an asset"
               kind="default"
-              onClick={action}
+              onClick={action('single')}
             >
               Select…
+            </Button>
+            <Button
+              disabled={readOnly}
+              inverted
+              title="Select an asset rendition"
+              kind="default"
+              onClick={action('singlerendition')}
+            >
+              Select rendition…
             </Button>
           <Button
             disabled={readOnly || !value}
