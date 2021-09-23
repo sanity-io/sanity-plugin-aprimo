@@ -1,7 +1,7 @@
     export default (tenantName: string, selectType: string) => {
 			let assetType = 'asset'
 			switch(selectType) {
-				case 'singleRendition':
+				case 'singlerendition':
 					assetType = 'asset rendition'
 					break
 				case 'multiple':
@@ -14,7 +14,7 @@
       const selectorOptions = {
         title: `Select ${assetType}`,
         description: `Select the ${assetType} you'd like to bring into this Sanity document`,
-        accept: 'Use this asset',
+        accept: `Use ${assetType}`,
         select: selectType
       }
       const encodedOptions = btoa(JSON.stringify(selectorOptions))
