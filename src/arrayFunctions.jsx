@@ -9,18 +9,21 @@ import DefaultArrayFunctions from 'part:@sanity/form-builder/input/array/functio
 import { useSecrets } from 'sanity-secrets';
 import SecretsConfigView, { namespace } from './components/SecretsConfigView';
 import aprimoAsset from './schema/AprimoAsset';
-import openSelector from './utils/openSelector';
+import { openSelector, setAuthToken, getRenditions } from './utils'
+import { RenditionSelector } from './components/RenditionSelector'
 
 const AssetListFunctions = props => {
   const { secrets, loading } = useSecrets(namespace);
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false)
+  const [renditions, setRenditions] = useState([])
+  const [token, setToken] = useState(null)
 
   const aprimoAssetType = props.type.of.find(
     t => t.name === aprimoAsset.name
   );
   
-  const { onCreateValue, onChange } = props;
+  const { onCreateValue, onChange, value } = props;
 
   const setAssets = (assets) => {
     const items = assets.map(asset => 
@@ -58,6 +61,55 @@ const AssetListFunctions = props => {
   }, [secrets, isLoading])
 
 
+  useEffect(() => {
+    const fetchToken = async () => {
+      let token = localStorage.getItem('aprimoToken')
+      if (!token && secrets) {
+        await setAuthToken(secrets)
+        token = localStorage.getItem('aprimoToken')
+      }
+      setToken(token)
+    }
+
+    if (aprimoAssetType) {
+      fetchToken()
+    }
+  }, [value, secrets])
+
+  
+  useEffect(() => {
+    const fetchRenditions = async () => {
+      if (token && secrets) {
+        try {
+          if (value && value[0]) {
+            const newRenditions = await getRenditions(secrets, token, value[0].id)
+            setRenditions(newRenditions)
+          }
+        } 
+        //thrown for 401
+        catch (e) {
+          //reset the token, which will rerun this callback
+          await setAuthToken(secrets)
+          const token = localStorage.getItem('aprimoToken')
+          setToken(token)
+        }
+      }
+    }
+    if (aprimoAssetType) {
+      fetchRenditions()
+    }
+  }, [value, secrets, token])
+
+  const changeRenditions = (event) => {
+    if (event && event.currentTarget && event.currentTarget.value) {
+      const renditionId = event.currentTarget.value
+      const renditionObj = renditions.find((rendition) => rendition.id == renditionId)
+      const newVal = {...value, ...{rendition: renditionObj}}
+      onChange(PatchEvent.from(newVal ? set(newVal) : unset()))
+    }
+  }
+
+
   const actions = (
     <>
       <Button
@@ -85,6 +137,7 @@ const AssetListFunctions = props => {
       <DefaultArrayFunctions {...props}>
         {aprimoAssetType && actions}
       </DefaultArrayFunctions>
+      { aprimoAssetType && <RenditionSelector renditions={renditions} /> }
     </>
   );
 };

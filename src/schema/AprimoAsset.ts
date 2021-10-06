@@ -14,7 +14,17 @@ export default {
     {
       type: 'string',
       name: 'title',
-    }
+    },
+    {
+      type: 'object',
+      name: 'rendition',
+      fields: [
+        {
+          type: 'string',
+          name: 'id',
+        },
+      ]
+    },
   ],
   inputComponent: AprimoWidget,
   component: AprimoPreview,

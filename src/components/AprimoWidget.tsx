@@ -3,18 +3,22 @@ import PatchEvent, {
   set,
   unset,
 } from 'part:@sanity/form-builder/patch-event'
+//TODO: pjut all these in sanity-ui
 import ButtonGrid from 'part:@sanity/components/buttons/button-grid'
 import Button from 'part:@sanity/components/buttons/default'
 import Fieldset from 'part:@sanity/components/fieldsets/default'
 import SetupIcon from 'part:@sanity/base/plugin-icon'
 import { Marker } from '@sanity/types'
+
 import styled from 'styled-components'
 import AprimoCDNPreview from './AprimoCDNPreview'
 import AprimoPreview from './AprimoPreview'
 import { useSecrets } from 'sanity-secrets'
-import SecretsConfigView, { Secrets, namespace } from './SecretsConfigView'
 import { nanoid } from 'nanoid';
-import openSelector from '../utils/openSelector'; 
+
+import SecretsConfigView, { Secrets, namespace } from './SecretsConfigView'
+import { openSelector, setAuthToken, getRenditions } from '../utils'
+import { RenditionSelector } from './RenditionSelector';
 
 const SetupButtonContainer = styled.div`
   position: relative;
@@ -33,8 +37,8 @@ type Props = {
   presence: any[]
 };
 
-const WidgetInput = (props: Props) => {
 
+const AprimoWidget = (props: Props) => {
   const {
     value,
     type,
@@ -47,18 +51,35 @@ const WidgetInput = (props: Props) => {
 
   const removeValue = () => {
     onChange(PatchEvent.from([unset()]));
+    setRenditions([])
   }
 
   const [showSettings, setShowSettings] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
-  const { secrets } = useSecrets<Secrets>(namespace);
 
-  //this is how we'll keep track of which message to listen to
-  const inputRef = useRef(null)
+  //this keeps track of which component is requesting an asset
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { secrets } = useSecrets<Secrets>(namespace);
+  const [token, setToken] = useState<string | null>(null)
+  const [renditions, setRenditions] = useState<Record<string, any>[]>([])
+
   const setAsset = (asset: Record<string, any>) => {
       asset._key = (value && value._key) ? value._key : nanoid()  
       onChange(PatchEvent.from(asset ? set(asset) : unset()))
   }
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      let token = localStorage.getItem('aprimoToken') as string
+      if (!token && secrets) {
+        await setAuthToken(secrets)
+        token = localStorage.getItem('aprimoToken') as string
+      }
+      setToken(token)
+    }
+
+    fetchToken()
+  }, [value, secrets])
 
   useEffect(() => {
     const handleMessageEvent = async (event: MessageEvent) => {
@@ -85,10 +106,38 @@ const WidgetInput = (props: Props) => {
 
   }, [secrets, isLoading])
 
+    useEffect(() => {
+      const fetchRenditions = async () => {
+      if (token && secrets && value && value.id) {
+        try {
+          const renditions = await getRenditions(secrets, token, value.id)
+          setRenditions(renditions)
+        } 
+        //thrown for 401
+        catch (e) {
+          //reset the token, which will rerun this callback
+          await setAuthToken(secrets)
+          const token = localStorage.getItem('aprimoToken') as string
+          setToken(token)
+        }
+      }
+    }
+    fetchRenditions()
+    }, [value, secrets, token])
+
+
   const action = (selectType: string) => secrets 
     ? () => {setIsLoading(true); openSelector(secrets.tenantName, selectType)}
     : () => setShowSettings(true)
 
+  const changeRendition = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (event && event.currentTarget && event.currentTarget.value) {
+      const renditionId = event.currentTarget.value
+      const renditionObj = renditions.find((rendition: Record<string, any>) => rendition.id == renditionId)
+      const newVal = {...value, ...{rendition: renditionObj}}
+      onChange(PatchEvent.from(newVal ? set(newVal) : unset()))
+    }
+  }
 
   return (
     <div>
@@ -102,7 +151,6 @@ const WidgetInput = (props: Props) => {
           kind="simple"
           title="Configure"
           tabIndex={1}
-          ref={inputRef}
           onClick={() => setShowSettings(true)}
         />
       </SetupButtonContainer>
@@ -129,15 +177,6 @@ const WidgetInput = (props: Props) => {
             >
               Select…
             </Button>
-            <Button
-              disabled={readOnly}
-              inverted
-              title="Select an asset rendition"
-              kind="default"
-              onClick={action('singlerendition')}
-            >
-              Select rendition…
-            </Button>
           <Button
             disabled={readOnly || !value}
             color="danger"
@@ -148,9 +187,10 @@ const WidgetInput = (props: Props) => {
             Remove
           </Button>
         </ButtonGrid>
+        { value && <RenditionSelector changeRendition={changeRendition} renditions={renditions} currentRendition={value && value.rendition} /> }
       </Fieldset>
     </div>
   );
 }
 
-export default WidgetInput;
+export default AprimoWidget;
