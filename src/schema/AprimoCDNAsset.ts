@@ -23,7 +23,7 @@ export default {
           type: 'string',
           name: 'publicuri',
         },
-      ]
+      ],
     },
   ],
   inputComponent: AprimoWidget,
@@ -32,11 +32,11 @@ export default {
     select: {
       url: 'rendition.publicuri',
     },
-    prepare({url}: any) {
-      return { 
-        rendition: {publicuri: url},
+    prepare({ url }: any) {
+      return {
+        rendition: { publicuri: url },
       }
     },
-    component: AprimoCDNPreview
+    component: AprimoCDNPreview,
   },
 }

@@ -111,9 +111,9 @@ export default {
               type: 'string',
               name: 'correlationId',
             },
-          ]
+          ],
         },
-      ]
+      ],
     },
   ],
   inputComponent: AprimoWidget,
@@ -123,9 +123,9 @@ export default {
     select: {
       id: 'id',
     },
-    prepare({id}: any) {
+    prepare({ id }: any) {
       return { id }
     },
     component: AprimoPreview,
-  }
+  },
 }

@@ -5,7 +5,6 @@ import { Secrets } from '../components/SecretsConfigView'
 //in the studio)
 
 export const setAuthToken = async (secrets: Secrets | undefined) => {
-
   //TODO: better error/missing secrets flow
   if (!secrets) {
     return
@@ -15,14 +14,14 @@ export const setAuthToken = async (secrets: Secrets | undefined) => {
   const headers = {
     'Client-id': secrets.clientId || '',
     'Content-type': 'application/json',
-    'Authorization': `Basic ${base64secret}`,
-    'X-URL': `https://${secrets.tenantName}.aprimo.com/api/oauth/create-native-token`
+    Authorization: `Basic ${base64secret}`,
+    'X-URL': `https://${secrets.tenantName}.aprimo.com/api/oauth/create-native-token`,
   }
   return fetch(secrets.proxy, {
     method: 'POST',
-    headers
+    headers,
   })
-  .then(res => res.json())
-  .then(res => res.accessToken)
-  .then(res => localStorage.setItem('aprimoToken', res))
+    .then(res => res.json())
+    .then(res => res.accessToken)
+    .then(res => localStorage.setItem('aprimoToken', res))
 }

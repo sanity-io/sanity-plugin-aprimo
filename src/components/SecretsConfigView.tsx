@@ -14,12 +14,14 @@ const pluginConfigKeys = [
   {
     key: 'tenantName',
     title: 'Tenant name',
-    description: 'The name of your tenant on Aprimo. When logging in in your browser, you can usually find it by looking at the URL, e.g., {TENANT_NAME}.dam.aprimo.com',
+    description:
+      'The name of your tenant on Aprimo. When logging in in your browser, you can usually find it by looking at the URL, e.g., {TENANT_NAME}.dam.aprimo.com',
   },
   {
     key: 'userName',
     title: 'User Name',
-    description: 'The user that will be used for accessing Aprimo in your studio',
+    description:
+      'The user that will be used for accessing Aprimo in your studio',
   },
   {
     key: 'token',
@@ -34,15 +36,16 @@ const pluginConfigKeys = [
   {
     key: 'proxy',
     title: 'Proxy',
-    description: 'The proxy used to reach Aprimo (necessary for non-CDN assets)',
+    description:
+      'The proxy used to reach Aprimo (necessary for non-CDN assets)',
   },
-];
+]
 
 export const namespace = 'aprimo'
 
 type Props = {
-  onClose: () => void;
-};
+  onClose: () => void
+}
 
 const SecretsConfigView = (props: Props) => {
   return (
@@ -52,7 +55,7 @@ const SecretsConfigView = (props: Props) => {
       keys={pluginConfigKeys}
       onClose={props.onClose}
     />
-  );
-};
+  )
+}
 
-export default SecretsConfigView;
+export default SecretsConfigView

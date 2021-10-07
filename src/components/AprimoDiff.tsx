@@ -1,24 +1,26 @@
-import React from 'react';
-import { DiffFromTo, SchemaType } from '@sanity/field/diff';
-import AprimoCDNPreview from './AprimoCDNPreview';
-import AprimoPreview from './AprimoPreview';
-
+import React from 'react'
+import { DiffFromTo, SchemaType } from '@sanity/field/diff'
+import AprimoCDNPreview from './AprimoCDNPreview'
+import AprimoPreview from './AprimoPreview'
 
 const findPreviewComponent = (schemaName: string) => {
-  switch(schemaName) {
+  switch (schemaName) {
     case 'aprimo.cdnasset':
       return AprimoCDNPreview
     case 'aprimo.asset':
       return AprimoPreview
     default:
       return () => <div />
-
   }
-
 }
 
-const AprimoDiff = ({diff, schemaType}
-: {diff: any, schemaType: SchemaType}) => {
+const AprimoDiff = ({
+  diff,
+  schemaType,
+}: {
+  diff: any
+  schemaType: SchemaType
+}) => {
   const previewComponent = findPreviewComponent(schemaType.name)
   return (
     <DiffFromTo

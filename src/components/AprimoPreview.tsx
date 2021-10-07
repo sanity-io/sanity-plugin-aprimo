@@ -5,34 +5,36 @@ import { Secrets, namespace } from './SecretsConfigView'
 import ImagePreview from './ImagePreview'
 
 type ComponentProps = {
-  layout?: 'default' | 'block';
-  value: Record<string, any>;
-  title?: string | null;
-};
+  layout?: 'default' | 'block'
+  value: Record<string, any>
+  title?: string | null
+}
 
 const getPreviewUrl = async (
   secrets: Secrets | undefined,
   token: string,
-  recordId: string) => {
-  
+  recordId: string
+) => {
   if (secrets && secrets.tenantName && token && recordId) {
     const headers = {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       'select-record': 'preview',
-      'API-Version': '1'
+      'API-Version': '1',
     }
 
-    return fetch(`https://${secrets.tenantName}.dam.aprimo.com/api/core/record/${recordId}`, { 
-      headers 
-    })
-      .then(res => res.json())
+    return fetch(
+      `https://${secrets.tenantName}.dam.aprimo.com/api/core/record/${recordId}`,
+      {
+        headers,
+      }
+    ).then(res => res.json())
   } else {
     return ''
   }
 }
 
-const AprimoPreview = ({value, layout}: ComponentProps) => {
-  const { secrets } = useSecrets<Secrets>(namespace);
+const AprimoPreview = ({ value, layout }: ComponentProps) => {
+  const { secrets } = useSecrets<Secrets>(namespace)
   const [url, setUrl] = useState(null)
   const [token, setToken] = useState<string | null>(null)
   // //TODO: do a video for videos?
@@ -60,9 +62,8 @@ const AprimoPreview = ({value, layout}: ComponentProps) => {
           //TODO: do something for vid
           // const contentType = recordInfo.contentType
           setUrl(previewUrl)
-        } 
-        //thrown for 401
-        catch (e) {
+        } catch (e) {
+          //thrown for 401
           //reset the token, which will rerun this callback
           await setAuthToken(secrets)
           const token = localStorage.getItem('aprimoToken') as string
