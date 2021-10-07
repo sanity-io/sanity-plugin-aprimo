@@ -1,4 +1,4 @@
-import AprimoWidget from '../components/AprimoWidget'
+import AprimoCDNWidget from '../components/AprimoCDNWidget'
 import AprimoDiff from '../components/AprimoDiff'
 import AprimoCDNPreview from '../components/AprimoCDNPreview'
 
@@ -26,7 +26,7 @@ export default {
       ],
     },
   ],
-  inputComponent: AprimoWidget,
+  inputComponent: AprimoCDNWidget,
   diffComponent: AprimoDiff,
   preview: {
     select: {
