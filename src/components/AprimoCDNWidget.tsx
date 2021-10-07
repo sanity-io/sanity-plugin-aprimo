@@ -76,7 +76,7 @@ const AprimoCDNWidget = (props: Props) => {
     window.addEventListener('message', handleMessageEvent)
     //cleanup
     return () => window.removeEventListener('message', handleMessageEvent)
-  }, [secrets, isLoading, setAsset])
+  }, [secrets, isLoading])
 
   const action = (selectType: string) =>
     secrets

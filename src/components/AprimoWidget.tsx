@@ -8,7 +8,6 @@ import SetupIcon from 'part:@sanity/base/plugin-icon'
 import { Marker } from '@sanity/types'
 
 import styled from 'styled-components'
-import AprimoCDNPreview from './AprimoCDNPreview'
 import AprimoPreview from './AprimoPreview'
 import { useSecrets } from 'sanity-secrets'
 import { nanoid } from 'nanoid'
@@ -94,7 +93,7 @@ const AprimoWidget = (props: Props) => {
     window.addEventListener('message', handleMessageEvent)
     //cleanup
     return () => window.removeEventListener('message', handleMessageEvent)
-  }, [secrets, isLoading, setAsset])
+  }, [secrets, isLoading])
 
   useEffect(() => {
     const fetchRenditions = async () => {
@@ -156,11 +155,7 @@ const AprimoWidget = (props: Props) => {
         level={level}
       >
         <div style={{ textAlign: 'center' }}>
-          {value && value.rendition && value.rendition.publicuri ? (
-            <AprimoCDNPreview value={value} />
-          ) : (
-            <AprimoPreview value={value} />
-          )}
+          <AprimoPreview value={value} />
         </div>
 
         <ButtonGrid align="start">

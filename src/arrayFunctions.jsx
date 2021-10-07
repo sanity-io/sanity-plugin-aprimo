@@ -18,7 +18,7 @@ const AssetListFunctions = props => {
 
   const aprimoAssetType = props.type.of.find(t => t.name === aprimoAsset.name)
 
-  const { onCreateValue, onChange, value } = props
+  const { onCreateValue, onChange } = props
 
   const setAssets = assets => {
     const items = assets.map(asset =>
