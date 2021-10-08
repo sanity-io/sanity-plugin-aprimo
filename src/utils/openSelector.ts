@@ -17,10 +17,13 @@ export const openSelector = (tenantName: string, selectType: string) => {
     accept: `Use ${assetType}`,
     select: selectType,
   }
+  	
+let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+  width=1000,height=600,left=100,top=100`
 
   const encodedOptions = btoa(JSON.stringify(selectorOptions))
   window.open(
     `https://${tenantName}.dam.aprimo.com/dam/selectcontent#options=${encodedOptions}`,
-    'selector'
+    'selector', params
   )
 }
