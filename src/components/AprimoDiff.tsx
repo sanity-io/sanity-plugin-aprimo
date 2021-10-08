@@ -21,6 +21,7 @@ const AprimoDiff = ({
   diff: any
   schemaType: SchemaType
 }) => {
+  console.log('diffFromTo', DiffFromTo)
   const previewComponent = findPreviewComponent(schemaType.name)
   return (
     <DiffFromTo

@@ -1,5 +1,5 @@
 {
-  "version": "0.3.3",
+  "version": "0.3.9",
   "license": "MIT",
   "files": [
     "dist",
@@ -13,9 +13,9 @@
     "prepare": "sanipack build"
   },
   "peerDependencies": {
-    "@sanity/base": "^2.6.2",
-    "@sanity/field": "^2.6.2",
-    "@sanity/form-builder": "^2.6.2",
+    "@sanity/base": "^2.19.0",
+    "@sanity/field": "^2.19.0",
+    "@sanity/form-builder": "^2.19.0",
     "react": "^17.0",
     "react-dom": "^17.0"
   },
@@ -33,9 +33,9 @@
   "name": "sanity-plugin-aprimo",
   "author": "Sanity.io <hello@sanity.io>",
   "devDependencies": {
-    "@sanity/base": "^2.6.2",
-    "@sanity/field": "^2.6.2",
-    "@sanity/form-builder": "^2.6.2",
+    "@sanity/base": "^2.19.0",
+    "@sanity/field": "^2.19.0",
+    "@sanity/form-builder": "^2.19.0",
     "@sanity/types": "^2.6.0",
     "@size-limit/preset-small-lib": "^4.9.2",
     "@types/react": "^17.0.2",

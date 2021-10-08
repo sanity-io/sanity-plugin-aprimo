@@ -13,15 +13,15 @@ export const RenditionSelector = ({
   currentRendition,
 }: RenditionProps) => {
   const placeholder = (
-    <option value="" disabled selected hidden>
+    <option value="" disabled hidden key={0}>
       Select rendition...
     </option>
   )
-  const renditionOptions = renditions.map((rendition: Record<string, any>) => (
-    <option value={rendition?.id}>{rendition?.label}</option>
+  const renditionOptions = renditions.map((rendition: Record<string, any>, i: number) => (
+    <option value={rendition?.id} key={i+1}>{rendition?.label}</option>
   ))
 
-  let selectedRendition: Record<string, any> = { id: null }
+  let selectedRendition: Record<string, any> = { id: "" }
   if (currentRendition && renditions) {
     const foundRendition = renditions.find(
       (rendition: Record<string, any>) => rendition.id === currentRendition.id

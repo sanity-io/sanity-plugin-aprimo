@@ -52,35 +52,35 @@ export default {
           name: 'metadata',
           fields: [
             {
-              type: 'number',
+              type: 'string',
               name: 'isCroppedImage',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'x',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'y',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'cropWidth',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'cropHeight',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'resizeWidth',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'resizeHeight',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'resolution',
             },
             {
@@ -100,11 +100,11 @@ export default {
               name: 'presetHash',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'isSmart',
             },
             {
-              type: 'number',
+              type: 'string',
               name: 'isPreset',
             },
             {

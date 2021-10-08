@@ -60,7 +60,7 @@ const AssetListFunctions = props => {
   const actions = (
     <>
       <Button
-        enabled={props.readOnly !== true && !loading}
+        enabled={(props.readOnly !== true && !loading) ? 1 : undefined}
         inverted
         onClick={() => {
           setIsLoading(true)
