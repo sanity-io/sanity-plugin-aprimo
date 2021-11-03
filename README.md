@@ -4,7 +4,7 @@
 
 This plugin allows you to open the Aprimo DAM asset selector from your studio and save those chosen assets and renditions in your Sanity documents.
 
-NOTE: To take advantage of assets that aren't public renditions, you will need to authenticate requests from the studio. Because CORS isn't possible with Aprimo, you will need to set up a proxy to route authentication requests (this proxy endpoint can be configured from the studio). We've set up a quickstart example for that [here](https://github.com/sanity-io/example-sanity-proxy). 
+NOTE: To take advantage of assets that aren't public renditions, you will need to authenticate requests from the studio. Because CORS isn't possible with Aprimo, you will need to set up a proxy to route authentication requests (this proxy endpoint can be configured from the studio). Your proxy endpoint should be able to route requests from the studio to https://your-tenant-name.aprimo.com/api/oauth/create-native-token. If you are using serverless functions or Next.js and would rather route all requests according to an `X-URL` header, we've set up a quickstart example for that [here](https://github.com/sanity-io/example-sanity-proxy). 
 
 ## Installation
 
