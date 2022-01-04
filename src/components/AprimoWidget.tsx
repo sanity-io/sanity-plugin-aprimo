@@ -52,6 +52,7 @@ const AprimoWidget = (props: Props) => {
 
   const setAsset = (asset: Record<string, any>) => {
     asset._key = value && value._key ? value._key : nanoid()
+    asset._type = type
     onChange(PatchEvent.from(asset ? set(asset) : unset()))
   }
 
