@@ -1,5 +1,5 @@
 {
-  "version": "0.4.1",
+  "version": "0.4.2",
   "license": "MIT",
   "files": [
     "dist",
@@ -16,8 +16,7 @@
     "@sanity/base": "^2.19.0",
     "@sanity/field": "^2.19.0",
     "@sanity/form-builder": "^2.19.0",
-    "react": "^17.0",
-    "react-dom": "^17.0"
+    "react": "^16.8.0 || 17.x"
   },
   "husky": {
     "hooks": {
