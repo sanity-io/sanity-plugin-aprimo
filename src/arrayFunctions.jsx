@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Button from 'part:@sanity/components/buttons/default'
+import Button from '@sanity/ui'
 import PatchEvent, {
   setIfMissing,
   insert,
@@ -74,10 +74,6 @@ const AssetListFunctions = props => {
   )
 
   return (
-    <>
-      {showSettings && (
-        <SecretsConfigView onClose={() => setShowSettings(false)} />
-      )}
       <DefaultArrayFunctions {...props}>
         {aprimoAssetType && actions}
       </DefaultArrayFunctions>

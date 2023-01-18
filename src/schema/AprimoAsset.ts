@@ -48,6 +48,10 @@ export default {
           name: 'tag',
         },
         {
+          type: 'string',
+          name: 'rawFile',
+        },
+        {
           type: 'object',
           name: 'metadata',
           fields: [
