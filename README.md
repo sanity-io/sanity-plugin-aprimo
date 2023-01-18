@@ -1,3 +1,5 @@
+This is a Sanity Studio v2 plugin. For the v3 version, please refer to the main branch.
+
 # Aprimo asset selector for Sanity
 
 ![aprimo gif](https://user-images.githubusercontent.com/3969996/136493868-9908e13d-e97e-4275-87e6-7a3ca3019d5b.gif)
