@@ -7,7 +7,7 @@ import PatchEvent, {
 import DefaultArrayFunctions from 'part:@sanity/form-builder/input/array/functions-default'
 
 import { useSecrets } from 'sanity-secrets'
-import SecretsConfigView, { namespace } from './components/SecretsConfigView'
+import { namespace } from './components/SecretsConfigView'
 import aprimoAsset from './schema/AprimoAsset'
 import { openSelector } from './utils'
 
@@ -74,6 +74,7 @@ const AssetListFunctions = props => {
   )
 
   return (
+    <>
       <DefaultArrayFunctions {...props}>
         {aprimoAssetType && actions}
       </DefaultArrayFunctions>

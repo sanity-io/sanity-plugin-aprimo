@@ -1,14 +1,14 @@
 export const openSelector = (tenantName: string, selectType: string) => {
-  let assetType = 'asset'
+  let assetType = 'asset rendition'
   switch (selectType) {
     case 'singlerendition':
       assetType = 'asset rendition'
       break
     case 'multiple':
-      assetType = 'assets'
+      assetType = 'asset renditions'
       break
     default:
-      assetType = 'asset'
+      assetType = 'asset rendition'
   }
 
   const selectorOptions = {
