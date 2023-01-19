@@ -1,5 +1,6 @@
 import React from 'react'
 import {AprimoCDNAsset} from '../schema/AprimoCDNAsset'
+import {Box} from '@sanity/ui'
 
 type ComponentProps = {
   layout?: 'default' | 'block'
@@ -11,14 +12,16 @@ export const AprimoCDNPreview = ({value, layout}: ComponentProps) => {
   const url = value?.rendition?.publicuri
   if (url) {
     return (
-      <img
-        alt="preview"
-        src={url}
-        style={{
-          maxWidth: layout === 'default' ? '80px' : '100%',
-          height: 'auto',
-        }}
-      />
+      <Box>
+        <img
+          alt="preview"
+          src={url}
+          style={{
+            maxWidth: layout === 'default' ? '80px' : '100%',
+            height: 'auto',
+          }}
+        />
+      </Box>
     )
   }
   return null

@@ -1,6 +1,7 @@
+import React from 'react'
+import {AprimoCDNPreview} from '../components/AprimoCDNPreview'
 import {AprimoCDNWidget} from '../components/AprimoCDNWidget'
 import {AprimoDiff} from '../components/AprimoDiff'
-import {AprimoCDNPreview} from '../components/AprimoCDNPreview'
 
 export interface AprimoCDNAsset {
   id: string
@@ -9,6 +10,7 @@ export interface AprimoCDNAsset {
     id: string
     publicuri: string
   }
+  _key?: string
 }
 
 export const AprimoCDNAssetSchema = {
@@ -38,6 +40,18 @@ export const AprimoCDNAssetSchema = {
   components: {
     input: AprimoCDNWidget,
     diff: AprimoDiff,
-    preview: AprimoCDNPreview,
+    // preview: AprimoCDNPreview,
+  },
+  preview: {
+    select: {
+      url: 'rendition.publicuri',
+      title: 'title',
+    },
+    prepare({url, title}: {url: string; title: string}) {
+      return {
+        title,
+        media: <img src={url} style={{height: '100%', width: '100%'}} />,
+      }
+    },
   },
 }

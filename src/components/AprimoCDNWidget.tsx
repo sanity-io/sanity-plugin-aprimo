@@ -18,6 +18,7 @@ export interface AprimoCDNWidgetProps extends ObjectInputProps<AprimoCDNAsset> {
 export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
   const {value, readOnly, onChange, pluginConfig} = props
 
+  const _key = value?._key
   const removeValue = () => {
     onChange(PatchEvent.from(unset()))
   }
@@ -38,7 +39,11 @@ export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
           setIsLoading(false)
           return
         } else if (event.data.selection && event.data.selection[0] && isLoading) {
-          setAsset(event.data.selection[0])
+          if (_key) {
+            setAsset({...event.data.selection[0], _key})
+          } else {
+            setAsset(event.data.selection[0])
+          }
           setIsLoading(false)
         }
       }
@@ -47,7 +52,7 @@ export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
     window.addEventListener('message', handleMessageEvent)
     //cleanup
     return () => window.removeEventListener('message', handleMessageEvent)
-  }, [pluginConfig, isLoading])
+  }, [pluginConfig, isLoading, _key])
 
   const action = useCallback(
     (selectType: string) => () => {
