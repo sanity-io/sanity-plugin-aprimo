@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import PatchEvent, { ObjectInputProps, set, unset } from 'sanity'
+import React, {useCallback, useEffect, useState} from 'react'
+import {PatchEvent, ObjectInputProps, set, unset} from 'sanity'
 import {Box, Button, Card, Grid, Text} from '@sanity/ui'
-import {PlugIcon} from '@sanity/icons'
 
-import styled from 'styled-components'
-import AprimoPreview from './AprimoPreview'
+import {AprimoCDNPreview} from './AprimoCDNPreview'
 
-import { openSelector } from '../utils'
-import { AprimoCDNAsset } from '../schema/AprimoCDNAsset'
+import {openSelector} from '../utils'
+import {AprimoCDNAsset} from '../schema/AprimoCDNAsset'
 
-const SetupButtonContainer = styled.div`
-  position: relative;
-  display: block;
-  font-size: 0.8em;
-  transform: translate(0%, -10%);
-`
 export interface AprimoConfig {
   tenantName: string
 }
@@ -24,39 +16,28 @@ export interface AprimoCDNWidgetProps extends ObjectInputProps<AprimoCDNAsset> {
 }
 
 export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
-  const { value, readOnly, onChange, pluginConfig } = props
+  const {value, readOnly, onChange, pluginConfig} = props
 
   const removeValue = () => {
-    //@ts-expect-error - PatchEvent.from is not typed correctly
     onChange(PatchEvent.from(unset()))
   }
-
-  const [showSettings, setShowSettings] = useState(false)
 
   //this keeps track of which component is requesting an asset
   const [isLoading, setIsLoading] = useState(false)
 
   const setAsset = (asset: Record<string, any>) => {
-    //@ts-expect-error - PatchEvent.from is not typed correctly
     onChange(PatchEvent.from(asset ? set(asset) : unset()))
   }
 
   useEffect(() => {
     const handleMessageEvent = async (event: MessageEvent) => {
       // Ensure only messages from the Aprimo Content Selector are handled
-      if (
-        pluginConfig &&
-        event.origin === `https://${pluginConfig.tenantName}.dam.aprimo.com`
-      ) {
+      if (pluginConfig && event.origin === `https://${pluginConfig.tenantName}.dam.aprimo.com`) {
         //if cancel, get out of fetching state
         if (event.data.result === 'cancel') {
           setIsLoading(false)
           return
-        } else if (
-          event.data.selection &&
-          event.data.selection[0] &&
-          isLoading
-        ) {
+        } else if (event.data.selection && event.data.selection[0] && isLoading) {
           setAsset(event.data.selection[0])
           setIsLoading(false)
         }
@@ -68,27 +49,30 @@ export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
     return () => window.removeEventListener('message', handleMessageEvent)
   }, [pluginConfig, isLoading])
 
-  const action = (selectType: string) =>
-    pluginConfig
-      ? () => {
-          setIsLoading(true)
-          openSelector(pluginConfig.tenantName, selectType)
-        }
-      : () => setShowSettings(true)
+  const action = useCallback(
+    (selectType: string) => () => {
+      setIsLoading(true)
+      openSelector(pluginConfig.tenantName, selectType)
+    },
+    [pluginConfig.tenantName]
+  )
+
+  if (!pluginConfig || !pluginConfig.tenantName) {
+    return (
+      <Box padding={3}>
+        <Card padding={4} radius={2} shadow={1} tone="caution">
+          <Text>
+            The tenant name has not been set in the configuration for the Aprimo plugin. Please add
+            a tenant name.
+          </Text>
+        </Card>
+      </Box>
+    )
+  }
 
   return (
     <div>
-      {showSettings && (
-        <Box padding={3}>
-          <Card padding={4} radius={2} shadow={1} tone="caution">
-            <Text>The tenant name has not been set in the configuration for the Aprimo plugin. Please add a tenant name.</Text>
-          </Card>
-        </Box>
-      )}
-        
-      <div style={{ textAlign: 'center' }}>
-        {value && <AprimoPreview value={value} />}
-      </div>
+      <div style={{textAlign: 'center'}}>{value && <AprimoCDNPreview value={value} />}</div>
 
       <Grid gap={1} style={{gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))'}}>
         <Button

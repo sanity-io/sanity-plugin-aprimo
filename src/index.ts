@@ -1,11 +1,5 @@
-import {
-  AprimoCDNAssetSchema,
-  type AprimoCDNAsset
-} from './schema/AprimoCDNAsset'
+export {aprimoPlugin} from './plugin'
 
-import { 
-  AprimoCDNWidget,
-  type AprimoConfig
- } from './components/AprimoCDNWidget'
+export {AprimoCDNAssetSchema, type AprimoCDNAsset} from './schema/AprimoCDNAsset'
 
-export { AprimoCDNAssetSchema, AprimoCDNWidget, AprimoCDNAsset, AprimoConfig }
+export {AprimoCDNWidget, type AprimoConfig} from './components/AprimoCDNWidget'

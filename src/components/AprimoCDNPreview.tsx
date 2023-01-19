@@ -1,15 +1,25 @@
 import React from 'react'
-import { AprimoCDNAsset } from '../schema/AprimoCDNAsset'
-import ImagePreview from './ImagePreview'
+import {AprimoCDNAsset} from '../schema/AprimoCDNAsset'
 
 type ComponentProps = {
   layout?: 'default' | 'block'
   value: AprimoCDNAsset
+  title?: string
 }
 
-const AprimoCDNPreview = ({ value, layout }: ComponentProps) => {
-  const url = value && value.rendition && value.rendition.publicuri
-  return <ImagePreview url={url} layout={layout} />
+export const AprimoCDNPreview = ({value, layout}: ComponentProps) => {
+  const url = value?.rendition?.publicuri
+  if (url) {
+    return (
+      <img
+        alt="preview"
+        src={url}
+        style={{
+          maxWidth: layout === 'default' ? '80px' : '100%',
+          height: 'auto',
+        }}
+      />
+    )
+  }
+  return null
 }
-
-export default AprimoCDNPreview
