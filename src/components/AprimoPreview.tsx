@@ -1,10 +1,11 @@
 import React from 'react'
+import { AprimoCDNAsset } from '../schema/AprimoCDNAsset'
 import ImagePreview from './ImagePreview'
 
 type ComponentProps = {
   layout?: 'default' | 'block'
-  value: AprimoAsset
-  title?: string | null
+  value: AprimoCDNAsset
+  title?: string
 }
 
 const AprimoPreview = ({ value: {rendition: {publicuri}}, layout }: ComponentProps) => {

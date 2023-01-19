@@ -2,7 +2,7 @@ import React from 'react'
 
 type ComponentProps = {
   layout?: 'default' | 'block'
-  url: string | null
+  url?: string 
 }
 
 const ImagePreview = ({ layout, url }: ComponentProps) => {

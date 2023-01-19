@@ -1,5 +1,11 @@
-import aprimo from './schema/AprimoAsset'
-import aprimoCDN from './schema/AprimoCDNAsset'
-import AprimoWidget from './components/AprimoWidget'
+import {
+  AprimoCDNAssetSchema,
+  type AprimoCDNAsset
+} from './schema/AprimoCDNAsset'
 
-export { aprimo, aprimoCDN, AprimoWidget }
+import { 
+  AprimoCDNWidget,
+  type AprimoConfig
+ } from './components/AprimoCDNWidget'
+
+export { AprimoCDNAssetSchema, AprimoCDNWidget, AprimoCDNAsset, AprimoConfig }

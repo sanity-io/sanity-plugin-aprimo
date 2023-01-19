@@ -1,9 +1,10 @@
 import React from 'react'
+import { AprimoCDNAsset } from '../schema/AprimoCDNAsset'
 import ImagePreview from './ImagePreview'
 
 type ComponentProps = {
   layout?: 'default' | 'block'
-  value: Record<string, any>
+  value: AprimoCDNAsset
 }
 
 const AprimoCDNPreview = ({ value, layout }: ComponentProps) => {

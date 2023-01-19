@@ -1,8 +1,17 @@
-import AprimoCDNWidget from '../components/AprimoCDNWidget'
+import { AprimoCDNWidget } from '../components/AprimoCDNWidget'
 import AprimoDiff from '../components/AprimoDiff'
 import AprimoCDNPreview from '../components/AprimoCDNPreview'
 
-export default {
+export interface AprimoCDNAsset {
+  id: string
+  title: string
+  rendition: {
+    id: string
+    publicuri: string
+  }
+}
+
+export const AprimoCDNAssetSchema = {
   type: 'object',
   name: 'aprimo.cdnasset',
   title: 'Aprimo CDN Asset',

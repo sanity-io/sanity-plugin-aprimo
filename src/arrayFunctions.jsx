@@ -3,8 +3,7 @@ import Button from '@sanity/ui'
 import PatchEvent, {
   setIfMissing,
   insert,
-} from 'part:@sanity/form-builder/patch-event'
-import DefaultArrayFunctions from 'part:@sanity/form-builder/input/array/functions-default'
+} from 'sanity'
 
 import { useSecrets } from 'sanity-secrets'
 import { namespace } from './components/SecretsConfigView'
@@ -75,9 +74,7 @@ const AssetListFunctions = props => {
 
   return (
     <>
-      <DefaultArrayFunctions {...props}>
-        {aprimoAssetType && actions}
-      </DefaultArrayFunctions>
+      {aprimoAssetType && actions}
     </>
   )
 }

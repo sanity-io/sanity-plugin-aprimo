@@ -5,6 +5,7 @@
     "browser": true
   },
   "extends": [
+    "@sanity/no-v2-imports",
     "sanity",
     "sanity/typescript",
     "sanity/react",

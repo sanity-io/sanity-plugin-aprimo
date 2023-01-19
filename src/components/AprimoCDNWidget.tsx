@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import PatchEvent, { set, unset } from 'part:@sanity/form-builder/patch-event'
-//TODO: pjut all these in sanity-ui
-import ButtonGrid from 'part:@sanity/components/buttons/button-grid'
-import Button from 'part:@sanity/components/buttons/default'
-import Fieldset from 'part:@sanity/components/fieldsets/default'
-import SetupIcon from 'part:@sanity/base/plugin-icon'
-import { Marker } from '@sanity/types'
+import PatchEvent, { ObjectInputProps, set, unset } from 'sanity'
+import {Box, Button, Card, Grid, Text} from '@sanity/ui'
+import {PlugIcon} from '@sanity/icons'
 
 import styled from 'styled-components'
 import AprimoPreview from './AprimoPreview'
-import { useSecrets } from 'sanity-secrets'
-import { nanoid } from 'nanoid'
 
-import SecretsConfigView, { Secrets, namespace } from './SecretsConfigView'
 import { openSelector } from '../utils'
+import { AprimoCDNAsset } from '../schema/AprimoCDNAsset'
 
 const SetupButtonContainer = styled.div`
   position: relative;
@@ -21,22 +15,20 @@ const SetupButtonContainer = styled.div`
   font-size: 0.8em;
   transform: translate(0%, -10%);
 `
-
-type Props = {
-  type: Record<string, any>
-  onChange: (patches: any) => void
-  value: any | undefined
-  level: number
-  readOnly: boolean
-  markers: Marker[]
-  presence: any[]
+export interface AprimoConfig {
+  tenantName: string
 }
 
-const AprimoCDNWidget = (props: Props) => {
-  const { value, type, markers, level, readOnly, presence, onChange } = props
+export interface AprimoCDNWidgetProps extends ObjectInputProps<AprimoCDNAsset> {
+  pluginConfig: AprimoConfig
+}
+
+export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
+  const { value, readOnly, onChange, pluginConfig } = props
 
   const removeValue = () => {
-    onChange(PatchEvent.from([unset()]))
+    //@ts-expect-error - PatchEvent.from is not typed correctly
+    onChange(PatchEvent.from(unset()))
   }
 
   const [showSettings, setShowSettings] = useState(false)
@@ -44,10 +36,8 @@ const AprimoCDNWidget = (props: Props) => {
   //this keeps track of which component is requesting an asset
   const [isLoading, setIsLoading] = useState(false)
 
-  const { secrets } = useSecrets<Secrets>(namespace)
-
   const setAsset = (asset: Record<string, any>) => {
-    asset._key = value && value._key ? value._key : nanoid()
+    //@ts-expect-error - PatchEvent.from is not typed correctly
     onChange(PatchEvent.from(asset ? set(asset) : unset()))
   }
 
@@ -55,8 +45,8 @@ const AprimoCDNWidget = (props: Props) => {
     const handleMessageEvent = async (event: MessageEvent) => {
       // Ensure only messages from the Aprimo Content Selector are handled
       if (
-        secrets &&
-        event.origin === `https://${secrets.tenantName}.dam.aprimo.com`
+        pluginConfig &&
+        event.origin === `https://${pluginConfig.tenantName}.dam.aprimo.com`
       ) {
         //if cancel, get out of fetching state
         if (event.data.result === 'cancel') {
@@ -76,65 +66,50 @@ const AprimoCDNWidget = (props: Props) => {
     window.addEventListener('message', handleMessageEvent)
     //cleanup
     return () => window.removeEventListener('message', handleMessageEvent)
-  }, [secrets, isLoading])
+  }, [pluginConfig, isLoading])
 
   const action = (selectType: string) =>
-    secrets
+    pluginConfig
       ? () => {
           setIsLoading(true)
-          openSelector(secrets.tenantName, selectType)
+          openSelector(pluginConfig.tenantName, selectType)
         }
       : () => setShowSettings(true)
 
   return (
     <div>
       {showSettings && (
-        <SecretsConfigView onClose={() => setShowSettings(false)} />
+        <Box padding={3}>
+          <Card padding={4} radius={2} shadow={1} tone="caution">
+            <Text>The tenant name has not been set in the configuration for the Aprimo plugin. Please add a tenant name.</Text>
+          </Card>
+        </Box>
       )}
-      <SetupButtonContainer>
-        <Button
-          color="primary"
-          icon={SetupIcon}
-          kind="simple"
-          title="Configure"
-          tabIndex={1}
-          onClick={() => setShowSettings(true)}
-        />
-      </SetupButtonContainer>
-      <Fieldset
-        markers={markers}
-        presence={presence}
-        legend={type.title}
-        description={type.description}
-        level={level}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <AprimoPreview value={value} />
-        </div>
+        
+      <div style={{ textAlign: 'center' }}>
+        {value && <AprimoPreview value={value} />}
+      </div>
 
-        <ButtonGrid align="start">
-          <Button
-            disabled={readOnly}
-            inverted
-            title="Select an asset"
-            kind="default"
-            onClick={action('singlerendition')}
-          >
-            Select…
-          </Button>
-          <Button
-            disabled={readOnly || !value}
-            color="danger"
-            inverted
-            title="Remove asset"
-            onClick={removeValue}
-          >
-            Remove
-          </Button>
-        </ButtonGrid>
-      </Fieldset>
+      <Grid gap={1} style={{gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))'}}>
+        <Button
+          disabled={readOnly}
+          mode="ghost"
+          title="Select an asset"
+          kind="default"
+          onClick={action('singlerendition')}
+        >
+          Select…
+        </Button>
+        <Button
+          disabled={readOnly || !value}
+          color="danger"
+          mode="ghost"
+          title="Remove asset"
+          onClick={removeValue}
+        >
+          Remove
+        </Button>
+      </Grid>
     </div>
   )
 }
-
-export default AprimoCDNWidget
