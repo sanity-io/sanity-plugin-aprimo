@@ -1,5 +1,5 @@
 import React from 'react'
-import {AprimoCDNAsset} from '../schema/AprimoCDNAsset'
+import {AprimoCDNAsset} from '../types'
 import {Box} from '@sanity/ui'
 
 type ComponentProps = {

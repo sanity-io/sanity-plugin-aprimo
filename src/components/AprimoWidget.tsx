@@ -1,22 +1,33 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState, useMemo} from 'react'
 import {PatchEvent, ObjectInputProps, set, unset} from 'sanity'
 import {Box, Button, Card, Grid, Text} from '@sanity/ui'
-
-import {AprimoCDNPreview} from './AprimoCDNPreview'
+import {AprimoCDNAsset, AprimoAsset, AprimoConfig} from '..'
 
 import {openSelector} from '../utils'
-import {AprimoCDNAsset} from '../schema/AprimoCDNAsset'
+import {AprimoFilePreview} from './AprimoFilePreview'
+import {AprimoCDNPreview} from './AprimoCDNPreview'
 
-export interface AprimoConfig {
-  tenantName: string
+const isAprimoCDNAsset = (value: AprimoCDNAsset | AprimoAsset): value is AprimoCDNAsset => {
+  return value && value.hasOwnProperty('rendition')
 }
 
-export interface AprimoCDNWidgetProps extends ObjectInputProps<AprimoCDNAsset> {
+const isAprimoAsset = (value: AprimoCDNAsset | AprimoAsset): value is AprimoAsset => {
+  //the ID is all we need to construct a link back to Aprimo
+  return value && value.hasOwnProperty('id')
+}
+
+export interface AprimoWidgetProps extends ObjectInputProps<AprimoCDNAsset | AprimoAsset> {
   pluginConfig: AprimoConfig
 }
 
-export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
-  const {value, readOnly, onChange, pluginConfig} = props
+export const AprimoWidget = (props: AprimoWidgetProps) => {
+  const {
+    value,
+    readOnly,
+    onChange,
+    schemaType,
+    pluginConfig: {tenantName},
+  } = props
 
   const _key = value?._key
   const removeValue = () => {
@@ -33,11 +44,10 @@ export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
   useEffect(() => {
     const handleMessageEvent = async (event: MessageEvent) => {
       // Ensure only messages from the Aprimo Content Selector are handled
-      if (pluginConfig && event.origin === `https://${pluginConfig.tenantName}.dam.aprimo.com`) {
+      if (tenantName && event.origin === `https://${tenantName}.dam.aprimo.com`) {
         //if cancel, get out of fetching state
         if (event.data.result === 'cancel') {
           setIsLoading(false)
-          return
         } else if (event.data.selection && event.data.selection[0] && isLoading) {
           if (_key) {
             setAsset({...event.data.selection[0], _key})
@@ -52,17 +62,24 @@ export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
     window.addEventListener('message', handleMessageEvent)
     //cleanup
     return () => window.removeEventListener('message', handleMessageEvent)
-  }, [pluginConfig, isLoading, _key])
+  }, [tenantName, isLoading, _key])
 
-  const action = useCallback(
-    (selectType: string) => () => {
-      setIsLoading(true)
-      openSelector(pluginConfig.tenantName, selectType)
-    },
-    [pluginConfig.tenantName]
-  )
+  const action = () => {
+    const selectType = schemaType.name === 'aprimo.cdnasset' ? 'singlerendition' : 'singlefile'
+    setIsLoading(true)
+    openSelector(tenantName, selectType)
+  }
 
-  if (!pluginConfig || !pluginConfig.tenantName) {
+  const preview = useMemo(() => {
+    if (value && schemaType.name === 'aprimo.cdnasset' && isAprimoCDNAsset(value)) {
+      return <AprimoCDNPreview value={value} />
+    } else if (value && schemaType.name === 'aprimo.asset' && isAprimoAsset(value)) {
+      return <AprimoFilePreview value={value} />
+    }
+    return null
+  }, [schemaType, value])
+
+  if (!tenantName) {
     return (
       <Box padding={3}>
         <Card padding={4} radius={2} shadow={1} tone="caution">
@@ -76,16 +93,15 @@ export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
   }
 
   return (
-    <div>
-      <div style={{textAlign: 'center'}}>{value && <AprimoCDNPreview value={value} />}</div>
-
+    <Box>
+      <Box>{preview}</Box>
       <Grid gap={1} style={{gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))'}}>
         <Button
           disabled={readOnly}
           mode="ghost"
           title="Select an asset"
           kind="default"
-          onClick={action('singlerendition')}
+          onClick={action}
         >
           Select…
         </Button>
@@ -99,6 +115,6 @@ export const AprimoCDNWidget = (props: AprimoCDNWidgetProps) => {
           Remove
         </Button>
       </Grid>
-    </div>
+    </Box>
   )
 }

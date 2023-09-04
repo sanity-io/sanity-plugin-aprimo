@@ -1,17 +1,6 @@
 import React from 'react'
-import {AprimoCDNPreview} from '../components/AprimoCDNPreview'
-import {AprimoCDNWidget} from '../components/AprimoCDNWidget'
+import {AprimoWidget} from '../components/AprimoWidget'
 import {AprimoDiff} from '../components/AprimoDiff'
-
-export interface AprimoCDNAsset {
-  id: string
-  title: string
-  rendition: {
-    id: string
-    publicuri: string
-  }
-  _key?: string
-}
 
 export const AprimoCDNAssetSchema = {
   type: 'object',
@@ -38,9 +27,8 @@ export const AprimoCDNAssetSchema = {
     },
   ],
   components: {
-    input: AprimoCDNWidget,
+    input: AprimoWidget,
     diff: AprimoDiff,
-    // preview: AprimoCDNPreview,
   },
   preview: {
     select: {
