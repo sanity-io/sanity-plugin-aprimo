@@ -1,5 +1,4 @@
 import {AprimoWidget} from '../components/AprimoWidget'
-import {AprimoDiff} from '../components/AprimoDiff'
 
 export const AprimoAssetSchema = {
   type: 'object',
@@ -21,7 +20,5 @@ export const AprimoAssetSchema = {
   ],
   components: {
     input: AprimoWidget,
-    diff: AprimoDiff,
-    // preview: AprimoCDNPreview,
   },
 }

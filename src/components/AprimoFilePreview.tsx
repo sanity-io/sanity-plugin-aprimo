@@ -30,9 +30,8 @@ export const AprimoFilePreview = ({value, tenantName}: AprimoFilePreviewProps) =
               href={damUrl} 
               target={`_blank`}
               onClick={onClick}
-            >
-              View
-            </Button>
+              text={'View'}
+            />
           </Stack>
         </Flex>
       </Card>

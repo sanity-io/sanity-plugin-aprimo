@@ -8,16 +8,16 @@ type ComponentProps = {
   title?: string
 }
 
-export const AprimoCDNPreview = ({value, layout}: ComponentProps) => {
+export const AprimoCDNPreview = ({value, layout = 'block'}: ComponentProps) => {
   const url = value?.rendition?.publicuri
   if (url) {
     return (
       <Box>
         <img
-          alt="preview"
+          alt={`preview for ${value?.title}`}
           src={url}
           style={{
-            maxWidth: layout === 'default' ? '80px' : '100%',
+            maxWidth: layout === 'block' ? '80px' : '100%',
             height: 'auto',
           }}
         />

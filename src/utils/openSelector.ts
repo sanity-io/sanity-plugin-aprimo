@@ -25,6 +25,6 @@ export const openSelector = (tenantName: string, selectType: string): void => {
   window.open(
     `https://${tenantName}.dam.aprimo.com/dam/selectcontent#options=${encodedOptions}`,
     'selector',
-    params
+    params,
   )
 }

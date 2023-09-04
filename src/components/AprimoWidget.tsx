@@ -72,7 +72,7 @@ export const AprimoWidget = (props: AprimoWidgetProps) => {
 
   const preview = useMemo(() => {
     if (value && schemaType.name === 'aprimo.cdnasset' && isAprimoCDNAsset(value)) {
-      return <AprimoCDNPreview value={value} />
+      return <AprimoCDNPreview value={value} layout='default' />
     } else if (value && schemaType.name === 'aprimo.asset' && isAprimoAsset(value)) {
       return <AprimoFilePreview value={value} tenantName={tenantName}/>
     }
