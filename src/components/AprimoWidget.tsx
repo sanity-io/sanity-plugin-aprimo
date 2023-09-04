@@ -44,7 +44,7 @@ export const AprimoWidget = (props: AprimoWidgetProps) => {
   useEffect(() => {
     const handleMessageEvent = async (event: MessageEvent) => {
       // Ensure only messages from the Aprimo Content Selector are handled
-      if (tenantName && event.origin === `https://${tenantName}.dam.aprimo.com`) {
+      if (tenantName && event.origin === `https://${tenantName || ""}.dam.aprimo.com`) {
         //if cancel, get out of fetching state
         if (event.data.result === 'cancel') {
           setIsLoading(false)
@@ -74,7 +74,7 @@ export const AprimoWidget = (props: AprimoWidgetProps) => {
     if (value && schemaType.name === 'aprimo.cdnasset' && isAprimoCDNAsset(value)) {
       return <AprimoCDNPreview value={value} />
     } else if (value && schemaType.name === 'aprimo.asset' && isAprimoAsset(value)) {
-      return <AprimoFilePreview value={value} />
+      return <AprimoFilePreview value={value} tenantName={tenantName}/>
     }
     return null
   }, [schemaType, value])
