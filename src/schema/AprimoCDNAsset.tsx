@@ -1,8 +1,8 @@
-import AprimoCDNWidget from '../components/AprimoCDNWidget'
-import AprimoDiff from '../components/AprimoDiff'
-import AprimoCDNPreview from '../components/AprimoCDNPreview'
+import React from 'react'
+import {AprimoWidget} from '../components/AprimoWidget'
+import {AprimoDiff} from '../components/AprimoDiff'
 
-export default {
+export const AprimoCDNAssetSchema = {
   type: 'object',
   name: 'aprimo.cdnasset',
   title: 'Aprimo CDN Asset',
@@ -26,17 +26,20 @@ export default {
       ],
     },
   ],
-  inputComponent: AprimoCDNWidget,
-  diffComponent: AprimoDiff,
+  components: {
+    input: AprimoWidget,
+    diff: AprimoDiff,
+  },
   preview: {
     select: {
       url: 'rendition.publicuri',
+      title: 'title',
     },
-    prepare({ url }: any) {
+    prepare({url, title}: {url: string; title: string}) {
       return {
-        rendition: { publicuri: url },
+        title,
+        media: <img src={url} style={{height: '100%', width: '100%'}} />,
       }
     },
-    component: AprimoCDNPreview,
   },
 }

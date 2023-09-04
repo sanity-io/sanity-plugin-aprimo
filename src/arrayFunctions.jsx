@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import Button from '@sanity/ui'
-import PatchEvent, {
-  setIfMissing,
-  insert,
-} from 'part:@sanity/form-builder/patch-event'
-import DefaultArrayFunctions from 'part:@sanity/form-builder/input/array/functions-default'
+import React, {useEffect, useState} from 'react'
+import {Button} from '@sanity/ui'
+import {PatchEvent, setIfMissing, insert} from 'sanity'
 
-import { useSecrets } from 'sanity-secrets'
-import { namespace } from './components/SecretsConfigView'
+import {useSecrets} from 'sanity-secrets'
+import {namespace} from './components/SecretsConfigView'
 import aprimoAsset from './schema/AprimoAsset'
-import { openSelector } from './utils'
+import {openSelector} from './utils'
 
-const AssetListFunctions = props => {
-  const { secrets, loading } = useSecrets(namespace)
+const AssetListFunctions = (props) => {
+  const {secrets, loading} = useSecrets(namespace)
   const [showSettings, setShowSettings] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const aprimoAssetType = props.type.of.find(t => t.name === aprimoAsset.name)
+  const aprimoAssetType = props.type.of.find((t) => t.name === aprimoAsset.name)
 
-  const { onCreateValue, onChange } = props
+  const {onCreateValue, onChange} = props
 
-  const setAssets = assets => {
-    const items = assets.map(asset =>
+  const setAssets = (assets) => {
+    const items = assets.map((asset) =>
       Object.assign(
         {},
         asset,
@@ -36,12 +32,9 @@ const AssetListFunctions = props => {
   }
 
   useEffect(() => {
-    const handleMessageEvent = async event => {
+    const handleMessageEvent = async (event) => {
       // Ensure only messages from the Aprimo Content Selector are handled
-      if (
-        secrets &&
-        event.origin === `https://${secrets.tenantName}.dam.aprimo.com`
-      ) {
+      if (secrets && event.origin === `https://${secrets.tenantName}.dam.aprimo.com`) {
         if (event.data.result === 'cancel') {
           setIsLoading(false)
           return
@@ -60,7 +53,7 @@ const AssetListFunctions = props => {
   const actions = (
     <>
       <Button
-        enabled={(props.readOnly !== true && !loading) ? 1 : undefined}
+        enabled={props.readOnly !== true && !loading ? 1 : undefined}
         inverted
         onClick={() => {
           setIsLoading(true)
@@ -73,13 +66,7 @@ const AssetListFunctions = props => {
     </>
   )
 
-  return (
-    <>
-      <DefaultArrayFunctions {...props}>
-        {aprimoAssetType && actions}
-      </DefaultArrayFunctions>
-    </>
-  )
+  return <>{aprimoAssetType && actions}</>
 }
 
 export default AssetListFunctions

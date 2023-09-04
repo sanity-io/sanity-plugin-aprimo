@@ -1,5 +1,9 @@
-import aprimo from './schema/AprimoAsset'
-import aprimoCDN from './schema/AprimoCDNAsset'
-import AprimoWidget from './components/AprimoWidget'
+export {aprimoPlugin} from './plugin'
 
-export { aprimo, aprimoCDN, AprimoWidget }
+export {AprimoCDNAssetSchema} from './schema/AprimoCDNAsset'
+export {AprimoAssetSchema} from './schema/AprimoAsset'
+export {AprimoAdditionalFileSchema} from './schema/additionalFile'
+
+export type {AprimoAsset, AprimoCDNAsset, AprimoAdditionalFile, AprimoConfig} from './types'
+
+export {AprimoWidget} from './components/AprimoWidget'

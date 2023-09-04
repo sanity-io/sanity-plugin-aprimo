@@ -1,14 +1,28 @@
 import React from 'react'
-import ImagePreview from './ImagePreview'
+import {AprimoCDNAsset} from '../types'
+import {Box} from '@sanity/ui'
 
 type ComponentProps = {
   layout?: 'default' | 'block'
-  value: Record<string, any>
+  value: AprimoCDNAsset
+  title?: string
 }
 
-const AprimoCDNPreview = ({ value, layout }: ComponentProps) => {
-  const url = value && value.rendition && value.rendition.publicuri
-  return <ImagePreview url={url} layout={layout} />
+export const AprimoCDNPreview = ({value, layout = 'block'}: ComponentProps) => {
+  const url = value?.rendition?.publicuri
+  if (url) {
+    return (
+      <Box>
+        <img
+          alt={`preview for ${value?.title}`}
+          src={url}
+          style={{
+            maxWidth: layout === 'block' ? '80px' : '100%',
+            height: 'auto',
+          }}
+        />
+      </Box>
+    )
+  }
+  return null
 }
-
-export default AprimoCDNPreview

@@ -7,7 +7,7 @@ This plugin allows you to open the Aprimo DAM asset selector from your studio an
 ## Installation
 
 1. In your studio directory, run `sanity install aprimo`.
-2. Declare a field to be  `aprimo.cdnasset` in your schema. For example:
+2. Declare a field to be `aprimo.cdnasset` in your schema. For example:
 
 ```javascript
     {
@@ -16,6 +16,7 @@ This plugin allows you to open the Aprimo DAM asset selector from your studio an
       description: "This asset is served from Aprimo",
     }
 ```
+
 3. Navigate to that directory in your studio. There will be a plugin icon to the top left of that field, that will allow you to add the credentials for your Aprimo tenant. Enter in these details (they will be safely stored in your Sanity dataset as a private document. Remember to include these credentials across all your datasets!) If any of these fields are confusing, contact your Aprimo administrator.
 
 <img width="324" alt="aprimo credentials" src="https://user-images.githubusercontent.com/3969996/136494120-0951c831-96da-4317-8b5f-d8d1f689c775.png">
